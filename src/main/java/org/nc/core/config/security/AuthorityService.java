@@ -10,11 +10,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @Transactional
@@ -27,7 +25,7 @@ public class AuthorityService implements UserDetailsService {
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Mono<UserEntity> user = userRepository.findByUsername(username);
+        UserEntity user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("No user found with username: " + username);
         }
@@ -35,13 +33,10 @@ public class AuthorityService implements UserDetailsService {
         boolean accountNonExpired = true;
         boolean credentialsNonExpired = true;
         boolean accountNonLocked = true;
-        AtomicReference<User> authUser = new AtomicReference<>();
-        user.doOnSuccess(userDetails -> {
-            authUser.set(new User(
-                    userDetails.username, userDetails.getPassword().toLowerCase(), enabled, accountNonExpired,
-                    credentialsNonExpired, accountNonLocked, getAuthorities(List.of("Granted"))));
-        });
-        return authUser.get();
+
+        return new User(
+                user.username, user.getPassword().toLowerCase(), enabled, accountNonExpired,
+                credentialsNonExpired, accountNonLocked, getAuthorities(List.of("Granted")));
     }
 
     private static List<GrantedAuthority> getAuthorities (List<String> roles) {

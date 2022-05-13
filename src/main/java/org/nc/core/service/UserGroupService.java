@@ -15,19 +15,19 @@ public class UserGroupService {
         this.userGroupRepository = userGroupRepository;
     }
 
-    public Mono<UserGroupEntity> createUserGroup(UserGroupEntity userGroup){
+    public UserGroupEntity createUserGroup(UserGroupEntity userGroup){
         return userGroupRepository.save(userGroup);
     }
 
-    public Mono<UserGroupEntity> updateUserGroup(UserGroupEntity userGroup){
+    public UserGroupEntity updateUserGroup(UserGroupEntity userGroup){
         return userGroupRepository.save(userGroup);
     }
 
-    public Mono<UserGroupEntity> getUserGroupById(String id){
-        return userGroupRepository.findById(id);
+    public UserGroupEntity getUserGroupById(String id){
+        return userGroupRepository.findById(id).orElseThrow();
     }
 
-    public Mono<Void> deleteUserGroup(String id){
-        return userGroupRepository.deleteById(id);
+    public void deleteUserGroup(String id){
+        userGroupRepository.deleteById(id);
     }
 }

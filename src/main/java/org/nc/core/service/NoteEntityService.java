@@ -7,7 +7,6 @@ import org.nc.core.repository.ColumnRepository;
 import org.nc.core.repository.NoteEntityRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Mono;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -26,11 +25,8 @@ public class NoteEntityService {
     }
 
     
-    public Mono<String> saveNote(List<TypeEnum> typeList){
+    public String saveNote(List<TypeEnum> typeList){
         LinkedList<String> columnList = (LinkedList<String>) columnEntityService.saveColumn(typeList);
-        Mono.fromCallable(()->{
-
-        });
         NoteEntity noteEntity = noteEntityRepository.save(new NoteEntity(columnList));
         columnEntityService.updateColumnWithNoteId(columnList, noteEntity.id);
         return noteEntity.id;

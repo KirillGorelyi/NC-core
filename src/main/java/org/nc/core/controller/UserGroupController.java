@@ -17,20 +17,20 @@ public class UserGroupController {
 
     @GetMapping
     @ResponseBody
-    public Mono<UserGroupEntity> getById(@RequestParam String id){
+    public UserGroupEntity getById(@RequestParam String id){
         return userGroupService.getUserGroupById(id);
     }
 
     @PostMapping
     @ResponseBody
-    public Mono<UserGroupEntity> save(@RequestBody UserGroupEntity userGroup){
+    public UserGroupEntity save(@RequestBody UserGroupEntity userGroup){
         return userGroupService.createUserGroup(userGroup);
     }
 
     @PutMapping
     @ResponseBody
     public Mono<UserGroupEntity> update(UserGroupEntity userGroup){
-        return userGroupService.updateUserGroup(userGroup);
+        return Mono.fromCallable(() -> userGroupService.updateUserGroup(userGroup));
     }
 
     @DeleteMapping

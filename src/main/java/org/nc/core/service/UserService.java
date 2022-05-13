@@ -2,10 +2,10 @@ package org.nc.core.service;
 
 import org.nc.core.config.security.roles.RoleEnum;
 import org.nc.core.entity.UserEntity;
+import org.nc.core.exception.UserAlreadyExistException;
 import org.nc.core.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Mono;
 
 @Service
 @Transactional
@@ -17,15 +17,14 @@ public class UserService {
     }
 
     
-    public Mono<UserEntity> getUser(String username){
+    public UserEntity getUser(String username){
         return userRepository.findByUsername(username);
     }
 
-    public Mono<UserEntity> addUserRole(String userId, RoleEnum roleEnum){
-        Mono<UserEntity> userEntity = userRepository.findById(userId);
-        return userEntity.flatMap(user -> {
-            user.addRole(roleEnum);
-            return userRepository.save(user);
-        });
+    public UserEntity addUserRole(String userId, RoleEnum roleEnum){
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow();
+        userEntity.addRole(roleEnum);
+        userRepository.save(userEntity);
+        return userEntity;
     }
 }
